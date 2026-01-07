@@ -24,7 +24,6 @@ const listingsRouter = require("./routes/listing.js");
 const reviewsRouter = require("./routes/review.js");
 const usersRouter = require("./routes/user.js");
 
-// const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
 const DBUrl = process.env.ATLAS_DB_URL;
 main()
   .then(() => {
@@ -47,7 +46,7 @@ app.engine("ejs", ejsMate);
 const store = MongoStore.create({
   mongoUrl : DBUrl,
   crypto:{
-    secret:"mypersonalsecret",
+    secret:process.env.SECRET,
   },
   touchAfter:24*3600,
 })
@@ -56,7 +55,7 @@ store.on("error", ()=>{
 })
 const sessionOption = {
   store,
-  secret:"mypersonalsecret",
+  secret:process.env.SECRET,
   resave:false,
   saveUninitialized:true,
   cookie:{
@@ -65,9 +64,6 @@ const sessionOption = {
     httpOnly:true,
   }
 }
-// app.get("/", (req, res) => {
-//   res.send("Hi, I am root");
-// });
 
 app.use(session(sessionOption));
 app.use(flash());
@@ -87,24 +83,15 @@ app.use((req, res, next)=>{
   next();
 });
 
-// app.get("/demouser", async (req, res)=>{
-//   let fakeUser  = new User ({
-//     email:"student@gmail.com",
-//     username:"sikandar-mahan"
-//   });
-//  let registerUser = await User.register(fakeUser, "helloworld");
-//  res.send(registerUser);
-// });
-
-
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", usersRouter);
-
+app.get("/",(req,res)=>{
+  res.redirect("/listings");
+})
 app.use((err, req, res,  next)=>{
   let {statusCode=500, message="Something went wrong"} = err;
   res.status(statusCode).render("error.ejs", {message})
-  // res.status(statusCode).send(message);
 })
 app.listen(8080, () => {
   console.log("server is listening to port 8080");
