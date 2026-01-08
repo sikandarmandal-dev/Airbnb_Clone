@@ -51,7 +51,7 @@ const store = MongoStore.create({
   touchAfter:24*3600,
 })
 store.on("error", ()=>{
-  console.log(err);
+  console.log("mongo error",err);
 })
 const sessionOption = {
   store,
@@ -94,6 +94,7 @@ app.use((err, req, res,  next)=>{
   let {statusCode=500, message="Something went wrong"} = err;
   res.status(statusCode).render("error.ejs", {message})
 })
+console.log("PORT from env:", process.env.PORT);
 app.listen(PORT, () => {
   console.log("server is listening to port 8080");
 });
