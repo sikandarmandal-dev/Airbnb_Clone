@@ -1,6 +1,7 @@
 if(process.env.NODE_ENV !="production"){
   require('dotenv').config()
 }
+
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -50,7 +51,7 @@ const store = MongoStore.create({
   touchAfter:24*3600,
 })
 store.on("error", ()=>{
-  console.log("mongo error",err);
+  console.log(err);
 })
 const sessionOption = {
   store,
@@ -93,4 +94,6 @@ app.use((err, req, res,  next)=>{
   let {statusCode=500, message="Something went wrong"} = err;
   res.status(statusCode).render("error.ejs", {message})
 })
-app.listen(8080, () => { console.log("server running on port 8080")});
+app.listen(8080, () => {
+  console.log("server is listening to port 8080");
+});
