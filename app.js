@@ -94,7 +94,10 @@ app.use((err, req, res,  next)=>{
   let {statusCode=500, message="Something went wrong"} = err;
   res.status(statusCode).render("error.ejs", {message})
 })
+
 console.log("PORT from env:", process.env.PORT);
-app.listen(PORT, () => {
-  console.log("server is listening to port 8080");
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log("Server running on port", PORT);
 });
+
